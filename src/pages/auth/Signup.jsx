@@ -31,7 +31,13 @@ export default function Signup() {
       return;
     }
     console.log("Signup data:", formData);
-    // Add your signup logic here
+    
+    // Store user info in localStorage
+    localStorage.setItem("userName", formData.fullName);
+    localStorage.setItem("isAuthenticated", "true");
+    
+    // Navigate to dashboard
+    navigate('/dashboard');
   };
 
   return (

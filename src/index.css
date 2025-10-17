@@ -21,8 +21,41 @@
     }
   }
 
+  @keyframes wave {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(20deg);
+    }
+    75% {
+      transform: rotate(-20deg);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .animate-float {
     animation: float 8s ease-in-out infinite, fadeInOut 8s ease-in-out infinite;
+  }
+
+  .animate-wave {
+    animation: wave 2s ease-in-out infinite;
+    transform-origin: 70% 70%;
+    display: inline-block;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
   }
 
   .animation-delay-2000 {

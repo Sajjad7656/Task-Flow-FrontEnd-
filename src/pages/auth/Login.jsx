@@ -21,7 +21,13 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login data:", formData);
-    // Add your login logic here
+    
+    // Store user info in localStorage
+    localStorage.setItem("userName", formData.email.split('@')[0]);
+    localStorage.setItem("isAuthenticated", "true");
+    
+    // Navigate to dashboard
+    navigate('/dashboard');
   };
 
   return (
