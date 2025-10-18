@@ -60,7 +60,7 @@ export default function Navbar() {
       )
     },
     {
-      name: "Manager",
+      name: "Agents",
       path: "/manager",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,81 +199,6 @@ export default function Navbar() {
 
           {/* Right Section - User Profile & Actions */}
           <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            <div className="relative" ref={notificationRef}>
-              <button 
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Notifications Dropdown */}
-              {showNotifications && (
-                <div className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-fadeIn z-50">
-                  {/* Header */}
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-4 text-white">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-bold">Notifications</h3>
-                        <p className="text-sm text-blue-100 mt-0.5">{unreadCount} unread notifications</p>
-                      </div>
-                      <button className="text-sm font-medium hover:text-blue-100 transition-colors duration-200">
-                        Mark all read
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Notifications List */}
-                  <div className="max-h-96 overflow-y-auto">
-                    {notifications.map((notification, index) => (
-                      <div
-                        key={notification.id}
-                        className={`px-5 py-4 hover:bg-blue-50 transition-all duration-200 cursor-pointer border-b border-gray-100 ${
-                          notification.unread ? 'bg-blue-50/50' : ''
-                        }`}
-                      >
-                        <div className="flex gap-3">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                            notification.type === 'task' ? 'bg-blue-100 text-blue-600' :
-                            notification.type === 'meeting' ? 'bg-purple-100 text-purple-600' :
-                            notification.type === 'success' ? 'bg-emerald-100 text-emerald-600' :
-                            'bg-indigo-100 text-indigo-600'
-                          }`}>
-                            {getNotificationIcon(notification.type)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-semibold text-gray-900">{notification.title}</h4>
-                              {notification.unread && (
-                                <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1.5"></div>
-                              )}
-                            </div>
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{notification.message}</p>
-                            <p className="text-xs text-gray-400 mt-1.5">{notification.time}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="bg-gray-50 px-5 py-3 border-t border-gray-100">
-                    <button className="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200">
-                      View All Notifications →
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Search */}
             <div className="hidden lg:block relative">
               {showSearch ? (

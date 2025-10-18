@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function OnlineAgentsWidget() {
+  const navigate = useNavigate();
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
@@ -9,13 +11,22 @@ export default function OnlineAgentsWidget() {
   const messageBoxRef = useRef(null);
 
   useEffect(() => {
-    // Handle click outside to close dropdown and message box
+    // Handle click outside to close dropdown and message box independently
     const handleClickOutside = (event) => {
+      // Check if click is outside dropdown (and not inside message box)
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowOnlineUsers(false);
+        // Don't close dropdown if clicking inside message box
+        if (!messageBoxRef.current || !messageBoxRef.current.contains(event.target)) {
+          setShowOnlineUsers(false);
+        }
       }
+      
+      // Check if click is outside message box (independent of dropdown)
       if (messageBoxRef.current && !messageBoxRef.current.contains(event.target)) {
-        setShowMessageBox(false);
+        // Don't close message box if clicking inside dropdown
+        if (!dropdownRef.current || !dropdownRef.current.contains(event.target)) {
+          setShowMessageBox(false);
+        }
       }
     };
 
@@ -235,7 +246,10 @@ export default function OnlineAgentsWidget() {
 
           {/* Footer */}
           <div className="bg-gray-50 px-5 py-3 border-t border-gray-100">
-            <button className="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200">
+            <button 
+              onClick={() => navigate("/manager")}
+              className="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+            >
               View All Team Members →
             </button>
           </div>

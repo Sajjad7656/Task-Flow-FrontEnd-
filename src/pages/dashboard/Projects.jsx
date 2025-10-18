@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import OnlineAgentsWidget from "../../components/OnlineAgentsWidget";
 
 export default function Projects() {
   const navigate = useNavigate();
@@ -186,6 +187,7 @@ export default function Projects() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <Navbar />
+      <OnlineAgentsWidget />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
         {/* Header Section */}
