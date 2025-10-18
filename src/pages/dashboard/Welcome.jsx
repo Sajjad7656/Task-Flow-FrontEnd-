@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import OnlineAgentsWidget from "../../components/OnlineAgentsWidget";
 
 export default function Welcome() {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState("User");
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [taskForm, setTaskForm] = useState({
+    title: "",
+    description: "",
+    priority: "medium",
+    assignedTo: "",
+    assignedBy: "",
+    status: "toDo",
+    completionDate: ""
+  });
 
   useEffect(() => {
     // Get user name from localStorage if available
@@ -78,10 +91,42 @@ export default function Welcome() {
     }
   ];
 
+  // Sample users for assignment dropdowns
+  const users = [
+    { id: "1", name: "Sarah Johnson", role: "agent" },
+    { id: "2", name: "Michael Chen", role: "agent" },
+    { id: "3", name: "Emma Williams", role: "agent" },
+    { id: "4", name: "James Rodriguez", role: "manager" },
+    { id: "5", name: "Olivia Martinez", role: "manager" }
+  ];
+
+  const handleTaskFormChange = (e) => {
+    const { name, value } = e.target;
+    setTaskForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreateTask = (e) => {
+    e.preventDefault();
+    // Handle task creation here - send to backend
+    console.log("Creating task:", taskForm);
+    // Reset form and close modal
+    setTaskForm({
+      title: "",
+      description: "",
+      priority: "medium",
+      assignedTo: "",
+      assignedBy: "",
+      status: "toDo",
+      completionDate: ""
+    });
+    setShowTaskModal(false);
+    alert("Task created successfully!");
+  };
+
   const quickActions = [
     {
-      title: "Create New Project",
-      description: "Start a new project from scratch",
+      title: "Create New Task",
+      description: "Start a new task from scratch",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -122,8 +167,11 @@ export default function Welcome() {
       {/* Navbar */}
       <Navbar />
 
+      {/* Online Agents Widget */}
+      <OnlineAgentsWidget />
+
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8 relative">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-8 mb-8 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
@@ -211,6 +259,10 @@ export default function Welcome() {
             {quickActions.map((action, index) => (
               <div
                 key={index}
+                onClick={() => {
+                  if (index === 0) setShowTaskModal(true);
+                  if (index === 1) navigate('/projects');
+                }}
                 className="group relative bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 hover:border-transparent transition-all duration-500 cursor-pointer overflow-hidden"
               >
                 {/* Gradient Background on Hover */}
@@ -347,6 +399,187 @@ export default function Welcome() {
           </div>
         </div>
       </main>
+
+      {/* Create Task Modal */}
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <style>{`
+            .hide-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+            .hide-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+          `}</style>
+          <div className="hide-scrollbar bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-8 py-6 text-white sticky top-0 z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold mb-1">Create New Task</h2>
+                  <p className="text-blue-100 text-sm">Fill in the details to create a new task</p>
+                </div>
+                <button
+                  onClick={() => setShowTaskModal(false)}
+                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleCreateTask} className="p-8 space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Task Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={taskForm.title}
+                  onChange={handleTaskFormChange}
+                  required
+                  placeholder="Enter task title"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={taskForm.description}
+                  onChange={handleTaskFormChange}
+                  required
+                  rows="4"
+                  placeholder="Describe the task in detail..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                ></textarea>
+              </div>
+
+              {/* Priority & Status Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Priority */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Priority <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="priority"
+                    value={taskForm.priority}
+                    onChange={handleTaskFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Status <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="status"
+                    value={taskForm.status}
+                    onChange={handleTaskFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                  >
+                    <option value="toDo">To Do</option>
+                    <option value="inProgress">In Progress</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Assigned To & Assigned By Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Assigned To */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Assigned To (Agent) <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="assignedTo"
+                    value={taskForm.assignedTo}
+                    onChange={handleTaskFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                  >
+                    <option value="">Select an agent</option>
+                    {users.filter(u => u.role === "agent").map(user => (
+                      <option key={user.id} value={user.id}>{user.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Assigned By */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Assigned By (Manager) <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="assignedBy"
+                    value={taskForm.assignedBy}
+                    onChange={handleTaskFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                  >
+                    <option value="">Select a manager</option>
+                    {users.filter(u => u.role === "manager").map(user => (
+                      <option key={user.id} value={user.id}>{user.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Completion Date */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Completion Date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="completionDate"
+                  value={taskForm.completionDate}
+                  onChange={handleTaskFormChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowTaskModal(false)}
+                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  Create Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

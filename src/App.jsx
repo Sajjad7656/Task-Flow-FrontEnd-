@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Welcome from "./pages/dashboard/Welcome";
+import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
+import Projects from "./pages/dashboard/Projects";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Welcome />} />
+        <Route path="/manager" element={<ManagerDashboard />} />
+        <Route path="/projects" element={<Projects />} />
       </Routes>
     </Router>
   );
